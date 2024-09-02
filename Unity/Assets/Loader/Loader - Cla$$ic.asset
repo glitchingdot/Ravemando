@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7be09e9a22eec4d4aa1b735607c1881c, type: 3}
+  m_Name: Loader - Cla$$ic
+  m_EditorClassIdentifier: 
+  modDependency:
+    value: 
+    type: 0
+  config:
+    generateEnableConfig: 0
+    enableConfigDefaultValue: 1
+    isExpanded: 1
+  bodyName: LoaderBody
+  nameTokenLocalizations:
+  - language: en
+    value: Cla$$ic
+  icon:
+    createFromColors: 0
+    sprite: {fileID: 21300000, guid: c3e671c30f98c9940aa392bec6c8cbac, type: 3}
+    colors:
+      left:
+        serializedVersion: 2
+        rgba: 0
+      top:
+        serializedVersion: 2
+        rgba: 0
+      right:
+        serializedVersion: 2
+        rgba: 0
+      bottom:
+        serializedVersion: 2
+        rgba: 0
+    isExpanded: 1
+  unlockableName: Cla$$ic
+  baseSkins:
+  - accessType: 0
+    name: 
+    index: 1
+    isExpanded: 1
+  renderersSource: 0
+  meshReplacements: []
+  gameObjectActivations: []
+  rendererInfos: []
+  minionSkinReplacements: []
+  projectileGhostReplacements: []

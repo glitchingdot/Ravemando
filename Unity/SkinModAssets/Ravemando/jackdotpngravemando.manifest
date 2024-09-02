@@ -1,0 +1,36 @@
+ManifestFileVersion: 0
+CRC: 3795695427
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 77141368185fbe0892dbfe2be0fbd3e1
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 700cce780156dfdd5fdd2ee7678caad4
+HashAppended: 0
+ClassTypes:
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Engineer/Engineer - Diffuse - Main.png
+- Assets/Commando/02 - H0rn3t/Icon.png
+- Assets/Placeholder Icon.png
+- Assets/Commando/Commando - Diffuse - Alt.png
+- Assets/Engineer/Engineer - Diffuse - Alt.png
+- Assets/Bandit/Hat.mat
+- Assets/Commando/Commando - Diffuse - Main.png
+- Assets/Loader/Loader - Diffuse - Main.png
+- Assets/Huntress/Huntress - Diffuse - Main.png
+- Assets/Engineer/Engineer - Emission.png
+- Assets/Huntress/Huntress - Emission.png
+- Assets/Commando/01 - Ravemando/Icon.png
+- Assets/Commando/02 - H0rn3t/Material.mat
+- Assets/Commando/01 - Ravemando/Material.mat
+Dependencies: []

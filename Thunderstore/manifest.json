@@ -1,0 +1,10 @@
+{
+    "name": "Ravemando",
+    "version_number": "1.2.0",
+    "website_url": "",
+    "description": "Gives survivors RGB lighting",
+    "dependencies": [
+        "tristanmcpherson-R2API-5.0.5",
+        "KingEnderBrine-LobbySkinsFix-1.2.1"
+    ]
+}

@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a82958a32066c0488448a2526446bd6, type: 3}
+  m_Name: Info
+  m_EditorClassIdentifier: 
+  modName: Ravemando
+  author: jackdotpng
+  version: 2.0.0
+  skins:
+  - {fileID: 11400000, guid: 757cb5ae34ec1f545a96ac7191a1e058, type: 2}
+  - {fileID: 11400000, guid: 81188b12cc652c2408fbb6e00afa216e, type: 2}
+  - {fileID: 11400000, guid: f09eed2d390886a42bc1e225e3165706, type: 2}
+  - {fileID: 11400000, guid: b08ee5ce2a1735a40974202ccc02b8cd, type: 2}
+  - {fileID: 11400000, guid: 6c1352e49dc12cb4fbac8960d6c7a6d2, type: 2}
+  - {fileID: 11400000, guid: 623b65e5be5924449a0397763b74390b, type: 2}
+  - {fileID: 11400000, guid: 15df9e46663be1145b3d96352476ae6a, type: 2}
+  - {fileID: 11400000, guid: 524b79dc466760945b1e9ec199e8eccb, type: 2}
+  - {fileID: 11400000, guid: 42ce0f74ee7d2a840ab12d59c4fa8128, type: 2}
+  - {fileID: 11400000, guid: fb559a1ddaae3454aa7137e0d80c152c, type: 2}
+  - {fileID: 11400000, guid: af200759cee2e4a4f86c323fa774792a, type: 2}
+  additionalResources:
+  - {fileID: 2800000, guid: 22ceba1692bc19d4fbbe8bcf77306b16, type: 3}
+  - {fileID: 2800000, guid: 34f46b6431d075946997fab7d7273963, type: 3}
+  - {fileID: 2800000, guid: 8430f498eeeb6de4d9bdd4bba8bec151, type: 3}
+  - {fileID: 2800000, guid: 712fe9e8270872f4fbd2e4abd678e71e, type: 3}
+  - {fileID: 2800000, guid: 8326154219a94384c853f1d97baebb53, type: 3}
+  - {fileID: 2800000, guid: 6a68e5051bce9cb449f2fdea754dfa5a, type: 3}
+  - {fileID: 2800000, guid: 98e554b8eeeddbc47a0e213054e38345, type: 3}
+  - {fileID: 2800000, guid: 49fdb1f62b1004b419af116d17bab122, type: 3}
+  regenerateCode: 1
+  regenerateAssemblyDefinition: 1

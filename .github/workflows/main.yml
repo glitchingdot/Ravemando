@@ -1,0 +1,17 @@
+name: Copy Markdown Files to Thunderstore Folder
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  run:
+    runs-on: [ubuntu-latest]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Copy README.md
+      run: |
+        cp ./README.md ./Thunderstore/
+
+    - name: Copy CHANGELOG.md
+      run: |
+        cp ./CHANGELOG.md ./Thunderstore/
+    

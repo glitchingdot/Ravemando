@@ -212,6 +212,7 @@ namespace Ravemando
             AddClassic();
             AddTraptain();
             AddRadmiral();
+            AddRailgunner();
 
             StartCycle();
         }

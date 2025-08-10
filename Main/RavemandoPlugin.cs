@@ -21,7 +21,6 @@ namespace Ravemando
 {
     [BepInDependency(LanguageAPI.PluginGUID)]
 
-    // This attribute is required, and lists metadata for your plugin.
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
 
     [BepInDependency("com.rune580.riskofoptions")]
@@ -215,6 +214,7 @@ namespace Ravemando
 
             AddRavemando();
             AddHornet();
+            AddTraptain();
 
             StartCycle();
         }
@@ -381,6 +381,46 @@ namespace Ravemando
             AddSkinToSkinController(skinController, skinDefInfo);
         }
 
+        private static void AddTraptain()
+        {
+            string bodyPrefabName = "CaptainBody";
+            string skinName = "Traptain";
+            string skinNameToken = "JACKDOTPNG_SKIN_COMMANDO_-_TRAPTAIN_NAME";
+
+            Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
+
+            int baseSkinIndex = 0;
+
+            GameObject bodyPrefab = null;
+            GameObject modelTransform = null;
+            ModelSkinController skinController = null;
+
+            SkinDefInfo skinDefInfo = CreateNewSkinDefInfo(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, out bodyPrefab, out modelTransform, out skinController);
+
+            CharacterModel.RendererInfo[] newRendererInfos = new CharacterModel.RendererInfo[1];
+            Renderer[] renderers = modelTransform.GetComponentsInChildren<Renderer>(true);
+
+            Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Captain.matCaptain_mat).WaitForCompletion();
+            Material instancedMat = new Material(loadedMat);
+
+            InstanceLogger.LogInfo("Loaded material: " + instancedMat.name);
+
+            int rendererIndex = 5;
+
+            newRendererInfos[0] = new CharacterModel.RendererInfo
+            {
+                defaultMaterial = instancedMat,
+                defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
+                ignoreOverlays = false,
+                renderer = renderers[rendererIndex],
+            };
+
+            AddToCycle(newRendererInfos[0]);
+            skinDefInfo.RendererInfos = newRendererInfos;
+
+            AddSkinToSkinController(skinController, skinDefInfo);
+        }
+
 #pragma warning restore CS0612 // Type or member is obsolete
 
 
@@ -399,16 +439,12 @@ namespace Ravemando
             }
         }
 
-        // Token: 0x04000002 RID: 2
         private static AssetBundle assetBundle;
 
-        // Token: 0x04000003 RID: 3
         private static readonly List<Material> materialsWithRoRShader = new List<Material>();
 
-        // Token: 0x02000003 RID: 3
         private class FieldException : Exception
         {
-            // Token: 0x06000018 RID: 24 RVA: 0x000049A1 File Offset: 0x00002BA1
             public FieldException(string message, Exception innerException) : base(message, innerException)
             {
             }

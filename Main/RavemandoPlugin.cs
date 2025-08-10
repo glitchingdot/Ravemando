@@ -72,6 +72,8 @@ namespace Ravemando
 
         private static IEnumerator CycleColor()
         {
+            MaterialPropertyBlock materialPropertyBlock = new MaterialPropertyBlock();
+
             int colorIndex = 0;
 
             List<Color> cycleColors = defaultColors;
@@ -93,15 +95,16 @@ namespace Ravemando
                     colorIndex = 0;
                 }
 
+                Color newColor = cycleColors[colorIndex] * strengthMultiplier.Value;
+                materialPropertyBlock.SetColor("_EmColor", newColor);
+
                 for (int i = 0; i < cycleRenderers.Count; i++)
                 {
                     CharacterModel.RendererInfo renderer = cycleRenderers[i];
 
                     InstanceLogger.LogDebug($"Setting color for renderer {i} to {cycleColors[colorIndex]} with strength multiplier {strengthMultiplier.Value}");
 
-                    Material mat = renderer.defaultMaterial;
-                    mat.SetColor("_EmColor", cycleColors[colorIndex] * strengthMultiplier.Value);
-                    renderer.defaultMaterial = mat;
+                    renderer.renderer.SetPropertyBlock(materialPropertyBlock);
                 }
 
                 colorIndex++;
@@ -190,7 +193,6 @@ namespace Ravemando
             });
         }
 
-        // Token: 0x06000006 RID: 6 RVA: 0x00002134 File Offset: 0x00000334
         private static void LoadMaterialsWithReplacedShader(string shaderPath, params string[] materialPaths)
         {
             Shader shader = Addressables.LoadAssetAsync<Shader>(shaderPath).WaitForCompletion();
@@ -204,8 +206,6 @@ namespace Ravemando
 
         private static void BodyCatalogInit()
         {
-            MethodInfo method = typeof(SkinDef).GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic);
-
             AddRavemando();
             AddHornet();
             AddLoader();
@@ -218,32 +218,32 @@ namespace Ravemando
 
         private static int CheckBodyPrefabValidity(string bodyPrefabName, string skinName, out GameObject bodyPrefab, out GameObject modelTransform, out ModelSkinController skinController)
         {
-            InstanceLogger.LogInfo("Getting Body Prefab");
+            InstanceLogger.LogDebug("Getting Body Prefab");
             bodyPrefab = BodyCatalog.FindBodyPrefab(bodyPrefabName);
             skinController = null;
             modelTransform = null;
 
             if (!bodyPrefab)
             {
-                InstanceLogger.LogWarning($"Failed to add \"{skinName}\" skin because \"{bodyPrefabName}\" doesn't exist");
+                InstanceLogger.LogError($"Failed to add \"{skinName}\" skin because \"{bodyPrefabName}\" doesn't exist");
                 return -1;
             }
 
-            InstanceLogger.LogInfo("Getting Model Locator");
+            InstanceLogger.LogDebug("Getting Model Locator");
             ModelLocator component = bodyPrefab.GetComponent<ModelLocator>();
             if (!component)
             {
-                InstanceLogger.LogWarning($"Failed to add \"{skinName}\" skin to \"{bodyPrefabName}\" because it doesn't have \"ModelLocator\" component");
+                InstanceLogger.LogError($"Failed to add \"{skinName}\" skin to \"{bodyPrefabName}\" because it doesn't have \"ModelLocator\" component");
                 return -2;
             }
 
 
-            InstanceLogger.LogInfo("Getting Model Transform");
+            InstanceLogger.LogDebug("Getting Model Transform");
             modelTransform = component.modelTransform.gameObject;
             skinController = modelTransform ? modelTransform.GetComponent<ModelSkinController>() : null;
             if (!skinController)
             {
-                InstanceLogger.LogWarning($"Failed to add \"{skinName}\" skin to \"{bodyPrefabName}\" because it doesn't have \"ModelSkinController\" component");
+                InstanceLogger.LogError($"Failed to add \"{skinName}\" skin to \"{bodyPrefabName}\" because it doesn't have \"ModelSkinController\" component");
                 return -3;
             }
 

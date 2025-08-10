@@ -398,7 +398,7 @@ namespace Ravemando
             string skinNameToken = "JACKDOTPNG_SKIN_CAPTAIN_-_RADMIRAL_NAME";
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
             int baseSkinIndex = 1;
-            Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Loader.matLoaderPilotDiffuseAlt_mat).WaitForCompletion();
+            Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Captain.matCaptainRobotBitsAlt_mat).WaitForCompletion();
             int rendererIndex = 5;
 
             AddSimpleSkin(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, rendererIndex, loadedMat);

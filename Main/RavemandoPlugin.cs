@@ -401,7 +401,7 @@ namespace Ravemando
             CharacterModel.RendererInfo[] newRendererInfos = new CharacterModel.RendererInfo[1];
             Renderer[] renderers = modelTransform.GetComponentsInChildren<Renderer>(true);
 
-            Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Captain.matCaptain_mat).WaitForCompletion();
+            Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Captain.matCaptainRobotBits_mat).WaitForCompletion();
             Material instancedMat = new Material(loadedMat);
 
             InstanceLogger.LogInfo("Loaded material: " + instancedMat.name);
@@ -441,7 +441,7 @@ namespace Ravemando
             CharacterModel.RendererInfo[] newRendererInfos = new CharacterModel.RendererInfo[1];
             Renderer[] renderers = modelTransform.GetComponentsInChildren<Renderer>(true);
 
-            Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Captain.matCaptain_mat).WaitForCompletion();
+            Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Captain.matCaptainRobotBitsAlt_mat).WaitForCompletion();
             Material instancedMat = new Material(loadedMat);
 
             InstanceLogger.LogInfo("Loaded material: " + instancedMat.name);

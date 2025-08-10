@@ -96,7 +96,6 @@ namespace Ravemando
                 }
 
                 Color newColor = cycleColors[colorIndex] * strengthMultiplier.Value;
-                materialPropertyBlock.SetColor("_EmColor", newColor);
 
                 for (int i = 0; i < cycleRenderers.Count; i++)
                 {
@@ -104,7 +103,9 @@ namespace Ravemando
 
                     InstanceLogger.LogDebug($"Setting color for renderer {i} to {cycleColors[colorIndex]} with strength multiplier {strengthMultiplier.Value}");
 
-                    renderer.renderer.SetPropertyBlock(materialPropertyBlock);
+                    Material mat = renderer.defaultMaterial;
+                    mat.SetColor("_EmColor", newColor);
+                    renderer.defaultMaterial = mat;
                 }
 
                 colorIndex++;
@@ -146,7 +147,6 @@ namespace Ravemando
                                     "CycleTime",
                                     0.5f,
                                     "Controls the time (in seconds) between changing colors");
-
 
             strengthMultiplier = Config.Bind("General",
                                              "StrengthMultiplier",

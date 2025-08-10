@@ -214,6 +214,7 @@ namespace Ravemando
             MethodInfo method = typeof(SkinDef).GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic);
 
             AddRavemando();
+            AddHornet();
 
             StartCycle();
         }
@@ -318,6 +319,48 @@ namespace Ravemando
             Renderer[] renderers = modelTransform.GetComponentsInChildren<Renderer>(true);
 
             Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Commando.matCommandoDualies_mat).WaitForCompletion();
+            Material instancedMat = new Material(loadedMat);
+
+            InstanceLogger.LogInfo("Loaded material: " + instancedMat.name);
+
+            int rendererIndex = 6;
+
+            newRendererInfos[0] = new CharacterModel.RendererInfo
+            {
+                defaultMaterial = instancedMat,
+                defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
+                ignoreOverlays = false,
+                renderer = renderers[rendererIndex],
+            };
+
+            AddToCycle(newRendererInfos[0]);
+            skinDefInfo.RendererInfos = newRendererInfos;
+
+            AddSkinToSkinController(skinController, skinDefInfo);
+        }
+
+        private static void AddHornet()
+        {
+            string bodyPrefabName = "CommandoBody";
+            string skinName = "H0rn3t";
+            string skinNameToken = "JACKDOTPNG_SKIN_COMMANDO_-_H0RN3T_NAME";
+
+            Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Commando/02 - H0rn3t/Icon.png");
+
+            int baseSkinIndex = 0;
+
+            GameObject bodyPrefab = null;
+            GameObject modelTransform = null;
+            ModelSkinController skinController = null;
+
+            SkinDefInfo skinDefInfo = CreateNewSkinDefInfo(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, out bodyPrefab, out modelTransform, out skinController);
+
+            //var mat = RavemandoPlugin.assetBundle.LoadAsset<Material>("Assets/Commando/01 - Ravemando/Material.mat");
+
+            CharacterModel.RendererInfo[] newRendererInfos = new CharacterModel.RendererInfo[1];
+            Renderer[] renderers = modelTransform.GetComponentsInChildren<Renderer>(true);
+
+            Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Commando.matCommandoDualiesAlt_mat).WaitForCompletion();
             Material instancedMat = new Material(loadedMat);
 
             InstanceLogger.LogInfo("Loaded material: " + instancedMat.name);

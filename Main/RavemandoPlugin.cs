@@ -147,7 +147,6 @@ namespace Ravemando
                                     0.5f,
                                     "Controls the time (in seconds) between changing colors");
 
-
             strengthMultiplier = Config.Bind("General",
                                              "StrengthMultiplier",
                                              1.0f,

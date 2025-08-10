@@ -446,22 +446,6 @@ namespace Ravemando
 
 #pragma warning restore CS0612 // Type or member is obsolete
 
-
-        private static void TryCatchThrow(string message, Action action)
-        {
-            try
-            {
-                if (action != null)
-                {
-                    action();
-                }
-            }
-            catch (Exception innerException)
-            {
-                throw new FieldException(message, innerException);
-            }
-        }
-
         private static AssetBundle assetBundle;
 
         private static readonly List<Material> materialsWithRoRShader = new List<Material>();

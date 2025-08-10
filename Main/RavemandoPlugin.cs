@@ -252,30 +252,18 @@ namespace Ravemando
             return 0;
         }
 
-        #pragma warning disable CS0612 // Type or member is obsolete
+#pragma warning disable CS0612 // Type or member is obsolete
 
-        private static void AddRavemando()
+        private static SkinDefInfo CreateNewSkinDefInfo(string bodyPrefabName, string skinName, string skinNameToken, Sprite icon, int baseSkinIndex, out GameObject bodyPrefab, out GameObject modelTransform, out ModelSkinController skinController)
         {
-            string bodyPrefabName = "CommandoBody";
-            string text2 = "Commando - Ravemando";
-
-            int baseSkinIndex = 0;
-            int rendererIndex = 6;
-
-            LanguageAPI.Add("JACKDOTPNG_SKIN_COMMANDO_-_RAVEMANDO_NAME", "Ravemando");
-
-            GameObject bodyPrefab = null;
-            GameObject modelTransform = null;
-            ModelSkinController skinController = null;
+            LanguageAPI.Add(skinNameToken, skinName);
 
             InstanceLogger.LogInfo("Checking prefab validity!");
-            if (CheckBodyPrefabValidity(bodyPrefabName, text2, out bodyPrefab, out modelTransform, out skinController) != 0)
+            if (CheckBodyPrefabValidity(bodyPrefabName, skinName, out bodyPrefab, out modelTransform, out skinController) != 0)
             {
                 InstanceLogger.LogError("Failed to add Ravemando skin due to invalid prefab!");
-                return;
+                return default;
             }
-
-            //var mat = RavemandoPlugin.assetBundle.LoadAsset<Material>("Assets/Commando/01 - Ravemando/Material.mat");
 
             SkinDefInfo skinDefInfo = default;
 
@@ -287,11 +275,44 @@ namespace Ravemando
             skinDefInfo.ProjectileGhostReplacements = [];
             skinDefInfo.MeshReplacements = [];
 
-            skinDefInfo.Name = "JACKDOTPNG_SKIN_COMMANDO_ - _RAVEMANDO_NAME";
-            skinDefInfo.NameToken = "JACKDOTPNG_SKIN_COMMANDO_-_RAVEMANDO_NAME";
+            skinDefInfo.Name = skinNameToken;
+            skinDefInfo.NameToken = skinNameToken;
 
-            skinDefInfo.Icon = assetBundle.LoadAsset<Sprite>("Assets/Commando/01 - Ravemando/Icon.png");
+            skinDefInfo.Icon = icon;
             skinDefInfo.RootObject = modelTransform;
+
+            return skinDefInfo;
+        }
+
+        private static void AddSkinToSkinController(ModelSkinController skinController, SkinDefInfo skinDefInfo)
+        {
+            SkinDef newSkin = Skins.CreateNewSkinDef(skinDefInfo);
+
+            var skinsArray = skinController.skins;
+            Array.Resize(ref skinsArray, skinsArray.Length + 1);
+            skinsArray[skinsArray.Length - 1] = newSkin;
+            skinController.skins = skinsArray;
+
+            InstanceLogger.LogInfo($"Added {skinDefInfo.Name} Skin!");
+        }
+
+        private static void AddRavemando()
+        {
+            string bodyPrefabName = "CommandoBody";
+            string skinName = "Ravemando";
+            string skinNameToken = "JACKDOTPNG_SKIN_COMMANDO_-_RAVEMANDO_NAME";
+
+            Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Commando/01 - Ravemando/Icon.png");
+
+            int baseSkinIndex = 0;
+
+            GameObject bodyPrefab = null;
+            GameObject modelTransform = null;
+            ModelSkinController skinController = null;
+
+            SkinDefInfo skinDefInfo = CreateNewSkinDefInfo(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, out bodyPrefab, out modelTransform, out skinController);
+
+            //var mat = RavemandoPlugin.assetBundle.LoadAsset<Material>("Assets/Commando/01 - Ravemando/Material.mat");
 
             CharacterModel.RendererInfo[] newRendererInfos = new CharacterModel.RendererInfo[1];
             Renderer[] renderers = modelTransform.GetComponentsInChildren<Renderer>(true);
@@ -300,6 +321,8 @@ namespace Ravemando
             Material instancedMat = new Material(loadedMat);
 
             InstanceLogger.LogInfo("Loaded material: " + instancedMat.name);
+
+            int rendererIndex = 6;
 
             newRendererInfos[0] = new CharacterModel.RendererInfo
             {
@@ -310,21 +333,12 @@ namespace Ravemando
             };
 
             AddToCycle(newRendererInfos[0]);
-
             skinDefInfo.RendererInfos = newRendererInfos;
 
-            SkinDef newSkin = Skins.CreateNewSkinDef(skinDefInfo);
-
-            var skinsArray = skinController.skins;
-            Array.Resize(ref skinsArray, skinsArray.Length + 1);
-            skinsArray[skinsArray.Length - 1] = newSkin;
-            skinController.skins = skinsArray;
-
-            InstanceLogger.LogInfo("Added Ravemando Skin!");
-
+            AddSkinToSkinController(skinController, skinDefInfo);
         }
 
-        #pragma warning restore CS0612 // Type or member is obsolete
+#pragma warning restore CS0612 // Type or member is obsolete
 
 
         private static void TryCatchThrow(string message, Action action)

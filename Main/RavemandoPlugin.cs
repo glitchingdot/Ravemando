@@ -72,8 +72,6 @@ namespace Ravemando
 
         private static IEnumerator CycleColor()
         {
-            MaterialPropertyBlock materialPropertyBlock = new MaterialPropertyBlock();
-
             int colorIndex = 0;
 
             List<Color> cycleColors = defaultColors;
@@ -96,7 +94,6 @@ namespace Ravemando
                 }
 
                 Color newColor = cycleColors[colorIndex] * strengthMultiplier.Value;
-                materialPropertyBlock.SetColor("_EmColor", newColor);
 
                 for (int i = 0; i < cycleRenderers.Count; i++)
                 {
@@ -104,7 +101,10 @@ namespace Ravemando
 
                     InstanceLogger.LogDebug($"Setting color for renderer {i} to {cycleColors[colorIndex]} with strength multiplier {strengthMultiplier.Value}");
 
-                    renderer.renderer.SetPropertyBlock(materialPropertyBlock);
+                    
+                    Material mat = renderer.defaultMaterial;
+                    mat.SetColor("_EmColor", newColor);
+                    renderer.defaultMaterial = mat;
                 }
 
                 colorIndex++;
@@ -399,7 +399,7 @@ namespace Ravemando
             string skinNameToken = "JACKDOTPNG_SKIN_CAPTAIN_-_RADMIRAL_NAME";
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
             int baseSkinIndex = 1;
-            Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Loader.matLoaderPilotDiffuseAlt_mat).WaitForCompletion();
+            Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Captain.matCaptainRobotBitsAlt_mat).WaitForCompletion();
             int rendererIndex = 5;
 
             AddSimpleSkin(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, rendererIndex, loadedMat);
@@ -413,7 +413,7 @@ namespace Ravemando
             string skinNameToken = "JACKDOTPNG_SKIN_RAILGUNNER_-_RAILGUNNER_NAME";
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
             int baseSkinIndex = 0;
-            int rendererIndex = 4;
+            int rendererIndex = 3;
 
             GameObject bodyPrefab;
             GameObject modelTransform;
@@ -422,10 +422,10 @@ namespace Ravemando
             SkinDefInfo skinDefInfo = CreateNewSkinDefInfo(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, out bodyPrefab, out modelTransform, out skinController);
 
             // Railgunner uses many different renderers, so we're gonna have to prepare for that
-            CharacterModel.RendererInfo[] newRendererInfos = new CharacterModel.RendererInfo[1];
+            CharacterModel.RendererInfo[] newRendererInfos = new CharacterModel.RendererInfo[2];
             Renderer[] renderers = modelTransform.GetComponentsInChildren<Renderer>(true);
 
-            Material baseMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailGunnerBase_mat).WaitForCompletion();
+            Material baseMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailgunnerTrim_mat).WaitForCompletion();
             Material instancedMat = new Material(baseMat);
 
             newRendererInfos[0] = new CharacterModel.RendererInfo

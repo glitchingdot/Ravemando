@@ -356,7 +356,7 @@ namespace Ravemando
         {
             string bodyPrefabName = "LoaderBody";
             string skinName = "L0@d3r";
-            string skinNameToken = "JACKDOTPNG_SKIN_COMMANDO_-_LOADER_NAME";
+            string skinNameToken = "JACKDOTPNG_SKIN_LOADER_-_LOADER_NAME";
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
             int baseSkinIndex = 0;
             Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Loader.matLoaderPilotDiffuse_mat).WaitForCompletion();
@@ -369,7 +369,7 @@ namespace Ravemando
         {
             string bodyPrefabName = "LoaderBody";
             string skinName = "ClA$$ic";
-            string skinNameToken = "JACKDOTPNG_SKIN_COMMANDO_-_CLASSIC_NAME";
+            string skinNameToken = "JACKDOTPNG_SKIN_LOADER_-_CLASSIC_NAME";
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
             int baseSkinIndex = 1;
             Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Loader.matLoaderPilotDiffuse_mat).WaitForCompletion();
@@ -382,7 +382,7 @@ namespace Ravemando
         {
             string bodyPrefabName = "CaptainBody";
             string skinName = "Traptain";
-            string skinNameToken = "JACKDOTPNG_SKIN_COMMANDO_-_TRAPTAIN_NAME";
+            string skinNameToken = "JACKDOTPNG_SKIN_CAPTAIN_-_TRAPTAIN_NAME";
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
             int baseSkinIndex = 0;
             Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Captain.matCaptainRobotBits_mat).WaitForCompletion();
@@ -395,7 +395,7 @@ namespace Ravemando
         {
             string bodyPrefabName = "CaptainBody";
             string skinName = "Radmiral";
-            string skinNameToken = "JACKDOTPNG_SKIN_COMMANDO_-_RADMIRAL_NAME";
+            string skinNameToken = "JACKDOTPNG_SKIN_CAPTAIN_-_RADMIRAL_NAME";
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
             int baseSkinIndex = 1;
             Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Loader.matLoaderPilotDiffuseAlt_mat).WaitForCompletion();

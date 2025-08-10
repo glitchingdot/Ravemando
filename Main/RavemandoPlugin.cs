@@ -215,6 +215,7 @@ namespace Ravemando
             AddRavemando();
             AddHornet();
             AddTraptain();
+            AddRadmiral();
 
             StartCycle();
         }
@@ -390,6 +391,46 @@ namespace Ravemando
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
 
             int baseSkinIndex = 0;
+
+            GameObject bodyPrefab = null;
+            GameObject modelTransform = null;
+            ModelSkinController skinController = null;
+
+            SkinDefInfo skinDefInfo = CreateNewSkinDefInfo(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, out bodyPrefab, out modelTransform, out skinController);
+
+            CharacterModel.RendererInfo[] newRendererInfos = new CharacterModel.RendererInfo[1];
+            Renderer[] renderers = modelTransform.GetComponentsInChildren<Renderer>(true);
+
+            Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Captain.matCaptain_mat).WaitForCompletion();
+            Material instancedMat = new Material(loadedMat);
+
+            InstanceLogger.LogInfo("Loaded material: " + instancedMat.name);
+
+            int rendererIndex = 5;
+
+            newRendererInfos[0] = new CharacterModel.RendererInfo
+            {
+                defaultMaterial = instancedMat,
+                defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
+                ignoreOverlays = false,
+                renderer = renderers[rendererIndex],
+            };
+
+            AddToCycle(newRendererInfos[0]);
+            skinDefInfo.RendererInfos = newRendererInfos;
+
+            AddSkinToSkinController(skinController, skinDefInfo);
+        }
+
+        private static void AddRadmiral()
+        {
+            string bodyPrefabName = "CaptainBody";
+            string skinName = "Radmiral";
+            string skinNameToken = "JACKDOTPNG_SKIN_COMMANDO_-_RADMIRAL_NAME";
+
+            Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
+
+            int baseSkinIndex = 1;
 
             GameObject bodyPrefab = null;
             GameObject modelTransform = null;

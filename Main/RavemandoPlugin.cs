@@ -412,39 +412,12 @@ namespace Ravemando
             string bodyPrefabName = "LoaderBody";
             string skinName = "L0@d3r";
             string skinNameToken = "JACKDOTPNG_SKIN_COMMANDO_-_LOADER_NAME";
-
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
-
             int baseSkinIndex = 0;
-
-            GameObject bodyPrefab = null;
-            GameObject modelTransform = null;
-            ModelSkinController skinController = null;
-
-            SkinDefInfo skinDefInfo = CreateNewSkinDefInfo(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, out bodyPrefab, out modelTransform, out skinController);
-
-            CharacterModel.RendererInfo[] newRendererInfos = new CharacterModel.RendererInfo[1];
-            Renderer[] renderers = modelTransform.GetComponentsInChildren<Renderer>(true);
-
             Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Loader.matLoaderPilotDiffuse_mat).WaitForCompletion();
-            Material instancedMat = new Material(loadedMat);
-
-            InstanceLogger.LogInfo("Loaded material: " + instancedMat.name);
-
             int rendererIndex = 2;
 
-            newRendererInfos[0] = new CharacterModel.RendererInfo
-            {
-                defaultMaterial = instancedMat,
-                defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
-                ignoreOverlays = false,
-                renderer = renderers[rendererIndex],
-            };
-
-            AddToCycle(newRendererInfos[0]);
-            skinDefInfo.RendererInfos = newRendererInfos;
-
-            AddSkinToSkinController(skinController, skinDefInfo);
+            AddSimpleSkin(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, rendererIndex, loadedMat);
         }
 
         private static void AddClassic()
@@ -452,39 +425,12 @@ namespace Ravemando
             string bodyPrefabName = "LoaderBody";
             string skinName = "ClA$$ic";
             string skinNameToken = "JACKDOTPNG_SKIN_COMMANDO_-_CLASSIC_NAME";
-
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
-
             int baseSkinIndex = 1;
-
-            GameObject bodyPrefab = null;
-            GameObject modelTransform = null;
-            ModelSkinController skinController = null;
-
-            SkinDefInfo skinDefInfo = CreateNewSkinDefInfo(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, out bodyPrefab, out modelTransform, out skinController);
-
-            CharacterModel.RendererInfo[] newRendererInfos = new CharacterModel.RendererInfo[1];
-            Renderer[] renderers = modelTransform.GetComponentsInChildren<Renderer>(true);
-
             Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Loader.matLoaderPilotDiffuse_mat).WaitForCompletion();
-            Material instancedMat = new Material(loadedMat);
-
-            InstanceLogger.LogInfo("Loaded material: " + instancedMat.name);
-
             int rendererIndex = 2;
 
-            newRendererInfos[0] = new CharacterModel.RendererInfo
-            {
-                defaultMaterial = instancedMat,
-                defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
-                ignoreOverlays = false,
-                renderer = renderers[rendererIndex],
-            };
-
-            AddToCycle(newRendererInfos[0]);
-            skinDefInfo.RendererInfos = newRendererInfos;
-
-            AddSkinToSkinController(skinController, skinDefInfo);
+            AddSimpleSkin(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, rendererIndex, loadedMat);
         }
 
         private static void AddTraptain()
@@ -492,39 +438,12 @@ namespace Ravemando
             string bodyPrefabName = "CaptainBody";
             string skinName = "Traptain";
             string skinNameToken = "JACKDOTPNG_SKIN_COMMANDO_-_TRAPTAIN_NAME";
-
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
-
             int baseSkinIndex = 0;
-
-            GameObject bodyPrefab = null;
-            GameObject modelTransform = null;
-            ModelSkinController skinController = null;
-
-            SkinDefInfo skinDefInfo = CreateNewSkinDefInfo(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, out bodyPrefab, out modelTransform, out skinController);
-
-            CharacterModel.RendererInfo[] newRendererInfos = new CharacterModel.RendererInfo[1];
-            Renderer[] renderers = modelTransform.GetComponentsInChildren<Renderer>(true);
-
             Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Captain.matCaptainRobotBits_mat).WaitForCompletion();
-            Material instancedMat = new Material(loadedMat);
-
-            InstanceLogger.LogInfo("Loaded material: " + instancedMat.name);
-
             int rendererIndex = 5;
 
-            newRendererInfos[0] = new CharacterModel.RendererInfo
-            {
-                defaultMaterial = instancedMat,
-                defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
-                ignoreOverlays = false,
-                renderer = renderers[rendererIndex],
-            };
-
-            AddToCycle(newRendererInfos[0]);
-            skinDefInfo.RendererInfos = newRendererInfos;
-
-            AddSkinToSkinController(skinController, skinDefInfo);
+            AddSimpleSkin(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, rendererIndex, loadedMat);
         }
 
         private static void AddRadmiral()
@@ -532,39 +451,13 @@ namespace Ravemando
             string bodyPrefabName = "CaptainBody";
             string skinName = "Radmiral";
             string skinNameToken = "JACKDOTPNG_SKIN_COMMANDO_-_RADMIRAL_NAME";
-
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
-
             int baseSkinIndex = 1;
-
-            GameObject bodyPrefab = null;
-            GameObject modelTransform = null;
-            ModelSkinController skinController = null;
-
-            SkinDefInfo skinDefInfo = CreateNewSkinDefInfo(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, out bodyPrefab, out modelTransform, out skinController);
-
-            CharacterModel.RendererInfo[] newRendererInfos = new CharacterModel.RendererInfo[1];
-            Renderer[] renderers = modelTransform.GetComponentsInChildren<Renderer>(true);
-
             Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Loader.matLoaderPilotDiffuseAlt_mat).WaitForCompletion();
-            Material instancedMat = new Material(loadedMat);
-
-            InstanceLogger.LogInfo("Loaded material: " + instancedMat.name);
-
             int rendererIndex = 5;
 
-            newRendererInfos[0] = new CharacterModel.RendererInfo
-            {
-                defaultMaterial = instancedMat,
-                defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
-                ignoreOverlays = false,
-                renderer = renderers[rendererIndex],
-            };
+            AddSimpleSkin(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, rendererIndex, loadedMat);
 
-            AddToCycle(newRendererInfos[0]);
-            skinDefInfo.RendererInfos = newRendererInfos;
-
-            AddSkinToSkinController(skinController, skinDefInfo);
         }
 
 #pragma warning restore CS0612 // Type or member is obsolete

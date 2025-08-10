@@ -405,6 +405,44 @@ namespace Ravemando
 
         }
 
+        private static void AddRailgunner()
+        {
+            string bodyPrefabName = "RailgunnerBody";
+            string skinName = "Railgunner";
+            string skinNameToken = "JACKDOTPNG_SKIN_RAILGUNNER_-_RAILGUNNER_NAME";
+            Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
+            int baseSkinIndex = 0;
+            int rendererIndex = 4;
+
+            GameObject bodyPrefab;
+            GameObject modelTransform;
+            ModelSkinController skinController;
+
+            SkinDefInfo skinDefInfo = CreateNewSkinDefInfo(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, out bodyPrefab, out modelTransform, out skinController);
+
+            // Railgunner uses many different renderers, so we're gonna have to prepare for that
+            CharacterModel.RendererInfo[] newRendererInfos = new CharacterModel.RendererInfo[1];
+            Renderer[] renderers = modelTransform.GetComponentsInChildren<Renderer>(true);
+
+            Material baseMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailGunnerBase_mat).WaitForCompletion();
+            Material instancedMat = new Material(baseMat);
+
+            newRendererInfos[0] = new CharacterModel.RendererInfo
+            {
+                defaultMaterial = instancedMat,
+                defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
+                ignoreOverlays = false,
+                renderer = renderers[rendererIndex],
+            };
+
+            AddToCycle(newRendererInfos[0]);
+            skinDefInfo.RendererInfos = newRendererInfos;
+
+            AddSkinToSkinController(skinController, skinDefInfo);
+
+        }
+
+
 #pragma warning restore CS0612 // Type or member is obsolete
 
 

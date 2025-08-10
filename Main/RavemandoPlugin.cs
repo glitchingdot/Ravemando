@@ -294,6 +294,35 @@ namespace Ravemando
             InstanceLogger.LogInfo($"Added {skinDefInfo.Name} Skin!");
         }
 
+        private static void AddSimpleSkin(string bodyPrefabName, string skinName, string skinNameToken, Sprite icon, int baseSkinIndex, int rendererIndex, Material replacementMaterial)
+        {
+            GameObject bodyPrefab = null;
+            GameObject modelTransform = null;
+            ModelSkinController skinController = null;
+
+            SkinDefInfo skinDefInfo = CreateNewSkinDefInfo(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, out bodyPrefab, out modelTransform, out skinController);
+
+            CharacterModel.RendererInfo[] newRendererInfos = new CharacterModel.RendererInfo[1];
+            Renderer[] renderers = modelTransform.GetComponentsInChildren<Renderer>(true);
+
+            Material instancedMat = new Material(replacementMaterial);
+
+            InstanceLogger.LogInfo("Loaded material: " + instancedMat.name);
+
+            newRendererInfos[0] = new CharacterModel.RendererInfo
+            {
+                defaultMaterial = instancedMat,
+                defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
+                ignoreOverlays = false,
+                renderer = renderers[rendererIndex],
+            };
+
+            AddToCycle(newRendererInfos[0]);
+            skinDefInfo.RendererInfos = newRendererInfos;
+
+            AddSkinToSkinController(skinController, skinDefInfo);
+        }
+
         private static void AddRavemando()
         {
             string bodyPrefabName = "CommandoBody";

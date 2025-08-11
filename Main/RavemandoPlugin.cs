@@ -14,6 +14,7 @@ using UnityEngine.AddressableAssets;
 using RiskOfOptions;
 using RiskOfOptions.OptionConfigs;
 using RiskOfOptions.Options;
+using System.Linq;
 
 namespace Ravemando
 {
@@ -76,8 +77,6 @@ namespace Ravemando
 
         private static IEnumerator CycleColor()
         {
-            MaterialPropertyBlock materialPropertyBlock = new MaterialPropertyBlock();
-
             int colorIndex = 0;
 
             List<Color> cycleColors = defaultColors;
@@ -103,13 +102,13 @@ namespace Ravemando
 
                 for (int i = 0; i < cycleRenderers.Count; i++)
                 {
-                    CharacterModel.RendererInfo renderer = cycleRenderers[i];
+                    CharacterModel.RendererInfo rendererInfo = cycleRenderers[i];
 
                     InstanceLogger.LogDebug($"Setting color for renderer {i} to {cycleColors[colorIndex]} with strength multiplier {strengthMultiplier.Value}");
 
-                    Material mat = renderer.defaultMaterial;
+                    Material mat = rendererInfo.defaultMaterial;
                     mat.SetColor("_EmColor", newColor);
-                    renderer.defaultMaterial = mat;
+                    rendererInfo.defaultMaterial = mat;
                 }
 
                 colorIndex++;
@@ -347,6 +346,38 @@ namespace Ravemando
             AddSkinToSkinController(skinController, skinDefInfo);
         }
 
+        private static Texture2D OverlayTexture2D(Texture2D original, Texture2D overlay, Color maskColor)
+        {
+            Texture2D newTexture = new Texture2D(original.width, original.height);
+
+            if ((overlay.width != original.width) && (overlay.height != original.height))
+            {
+                return null;
+            }
+
+            Color[] originalPixels = original.GetPixels();
+            Color[] overlayPixels = overlay.GetPixels();
+            Color[] newPixels = new Color[originalPixels.Length];
+
+            for (int i = 0; i < originalPixels.Length; i++)
+            {
+                Color originalPixel = originalPixels[i];
+                Color overlayPixel = overlayPixels[i];
+
+                if (overlayPixel != maskColor)
+                {
+                    newPixels[i] = overlayPixel;
+                }
+                else
+                {
+                    newPixels[i] = originalPixel;
+                }
+            }
+
+            newTexture.SetPixels(newPixels);
+            return newTexture;
+        }
+
         private static void AddRavemando()
         {
             string bodyPrefabName = "CommandoBody";
@@ -357,6 +388,14 @@ namespace Ravemando
 
             //Material mat = RavemandoPlugin.assetBundle.LoadAsset<Material>("Assets/Commando/01 - Ravemando/Material.mat");
             Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Commando.matCommandoDualies_mat).WaitForCompletion();
+
+            Texture2D diffuseTexture = Addressables.LoadAssetAsync<Texture2D>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Commando.texCommandoPaletteDiffuse_png).WaitForCompletion();
+            Texture2D emiTexture = Addressables.LoadAssetAsync<Texture2D>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Commando.texCommandoPaletteEmission_png).WaitForCompletion();
+
+            Texture2D newDiffuse = OverlayTexture2D(diffuseTexture, emiTexture, Color.black);
+
+            loadedMat.SetTexture("_MainTex", newDiffuse);
+
             int rendererIndex = 6;
 
             AddSimpleSkin(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, rendererIndex, loadedMat);

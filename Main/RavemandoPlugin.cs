@@ -201,7 +201,7 @@ namespace Ravemando
 
 
             BodyCatalog.availability.CallWhenAvailable(new Action(BodyCatalogInit));
-            //RavemandoPlugin.ReplaceShaders();
+            RavemandoPlugin.ReplaceShaders();
         }
 
         private static void ReplaceShaders()
@@ -296,7 +296,7 @@ namespace Ravemando
             skinDefInfo.ProjectileGhostReplacements = [];
             skinDefInfo.MeshReplacements = [];
 
-            skinDefInfo.Name = skinNameToken;
+            skinDefInfo.Name = skinName;
             skinDefInfo.NameToken = skinNameToken;
 
             skinDefInfo.Icon = icon;
@@ -330,7 +330,23 @@ namespace Ravemando
 
             Material instancedMat = new Material(replacementMaterial);
 
+            /*
+            Texture diffuseTexture = instancedMat.mainTexture;
+
+            if (diffuseTexture == null)
+            {
+                InstanceLogger.LogInfo("No Main Texture!");
+            }
+
+            Texture emiTexture = instancedMat.GetTexture("_EmTex");
+
+            Texture newDiffuse = OverlayTexture2D(diffuseTexture, emiTexture, Color.black);
+
+            instancedMat.SetTexture("_MainTex", newDiffuse);
             InstanceLogger.LogInfo("Loaded material: " + instancedMat.name);
+            */
+
+            instancedMat.SetFloat("_EmPower", 1.0f);
 
             newRendererInfos[0] = new CharacterModel.RendererInfo
             {
@@ -346,35 +362,58 @@ namespace Ravemando
             AddSkinToSkinController(skinController, skinDefInfo);
         }
 
-        private static Texture2D OverlayTexture2D(Texture2D original, Texture2D overlay, Color maskColor)
+
+        // Shout-out StackOverflow #44734346
+        private static Texture2D duplicateTexture(Texture source)
         {
-            Texture2D newTexture = new Texture2D(original.width, original.height);
+            RenderTexture renderTex = RenderTexture.GetTemporary(
+                        source.width,
+                        source.height,
+                        0,
+                        RenderTextureFormat.Default,
+                        RenderTextureReadWrite.Default);
+
+            Graphics.Blit(source, renderTex);
+            RenderTexture previous = RenderTexture.active;
+            RenderTexture.active = renderTex;
+            Texture2D readableText = new Texture2D(source.width, source.height);
+            readableText.ReadPixels(new Rect(0, 0, renderTex.width, renderTex.height), 0, 0);
+            readableText.Apply();
+            RenderTexture.active = previous;
+            RenderTexture.ReleaseTemporary(renderTex);
+            return readableText;
+        }
+
+        private static Texture2D OverlayTexture2D(Texture original, Texture overlay, Color maskColor)
+        {
+            Texture2D newTexture = duplicateTexture(original);
 
             if ((overlay.width != original.width) && (overlay.height != original.height))
             {
                 return null;
             }
 
-            Color[] originalPixels = original.GetPixels();
-            Color[] overlayPixels = overlay.GetPixels();
-            Color[] newPixels = new Color[originalPixels.Length];
+            Color[] originalPixels = newTexture.GetPixels();
+            Color[] overlayPixels = duplicateTexture(overlay).GetPixels();
 
             for (int i = 0; i < originalPixels.Length; i++)
             {
-                Color originalPixel = originalPixels[i];
                 Color overlayPixel = overlayPixels[i];
 
                 if (overlayPixel != maskColor)
                 {
-                    newPixels[i] = overlayPixel;
+                    InstanceLogger.LogInfo($"Overlaid Pixel {i} to {overlayPixel}!");
+                    originalPixels[i] = overlayPixel;
                 }
-                else
-                {
-                    newPixels[i] = originalPixel;
-                }
+
             }
 
-            newTexture.SetPixels(newPixels);
+            InstanceLogger.LogInfo(originalPixels[495]);
+
+            newTexture.SetPixels(originalPixels);
+            newTexture.name = $"{original.name}_OVERLAID";
+            newTexture.Apply(false);
+
             return newTexture;
         }
 
@@ -385,16 +424,7 @@ namespace Ravemando
             string skinNameToken = "JACKDOTPNG_SKIN_COMMANDO_-_RAVEMANDO_NAME";
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Commando/01 - Ravemando/Icon.png");
             int baseSkinIndex = 0;
-
-            //Material mat = RavemandoPlugin.assetBundle.LoadAsset<Material>("Assets/Commando/01 - Ravemando/Material.mat");
             Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Commando.matCommandoDualies_mat).WaitForCompletion();
-
-            Texture2D diffuseTexture = Addressables.LoadAssetAsync<Texture2D>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Commando.texCommandoPaletteDiffuse_png).WaitForCompletion();
-            Texture2D emiTexture = Addressables.LoadAssetAsync<Texture2D>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Commando.texCommandoPaletteEmission_png).WaitForCompletion();
-
-            Texture2D newDiffuse = OverlayTexture2D(diffuseTexture, emiTexture, Color.black);
-
-            loadedMat.SetTexture("_MainTex", newDiffuse);
 
             int rendererIndex = 6;
 
@@ -408,7 +438,6 @@ namespace Ravemando
             string skinNameToken = "JACKDOTPNG_SKIN_COMMANDO_-_H0RN3T_NAME";
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Commando/02 - H0rn3t/Icon.png");
             int baseSkinIndex = 1;
-            //var mat = RavemandoPlugin.assetBundle.LoadAsset<Material>("Assets/Commando/01 - Ravemando/Material.mat");
             Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Commando.matCommandoDualiesAlt_mat).WaitForCompletion();
             int rendererIndex = 6;
 

@@ -232,6 +232,8 @@ namespace Ravemando
             AddHornet();
             AddLoader();
             AddClassic();
+            AddAcrid();
+            AddAcridAlt();
             AddTraptain();
             AddRadmiral();
 
@@ -395,6 +397,32 @@ namespace Ravemando
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
             int baseSkinIndex = 1;
             Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Loader.matLoaderPilotDiffuse_mat).WaitForCompletion();
+            int rendererIndex = 2;
+
+            AddSimpleSkin(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, rendererIndex, loadedMat);
+        }
+
+        private static void AddAcrid()
+        {
+            string bodyPrefabName = "CrocoBody";
+            string skinName = "Acrid";
+            string skinNameToken = "JACKDOTPNG_SKIN_LOADER_-_ACRID_NAME";
+            Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
+            int baseSkinIndex = 0;
+            Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Croco.matCroco_mat).WaitForCompletion();
+            int rendererIndex = 2;
+
+            AddSimpleSkin(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, rendererIndex, loadedMat);
+        }
+
+        private static void AddAcridAlt()
+        {
+            string bodyPrefabName = "CrocoBody";
+            string skinName = "Acrid Alt";
+            string skinNameToken = "JACKDOTPNG_SKIN_LOADER_-_ACRIDALT_NAME";
+            Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
+            int baseSkinIndex = 1;
+            Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Croco.matCrocoAlt_mat).WaitForCompletion();
             int rendererIndex = 2;
 
             AddSimpleSkin(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, rendererIndex, loadedMat);

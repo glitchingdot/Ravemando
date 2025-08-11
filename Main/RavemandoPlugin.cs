@@ -11,6 +11,10 @@ using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
+using RiskOfOptions;
+using RiskOfOptions.OptionConfigs;
+using RiskOfOptions.Options;
+
 namespace Ravemando
 {
     [BepInDependency(LanguageAPI.PluginGUID)]
@@ -148,16 +152,36 @@ namespace Ravemando
                                     0.5f,
                                     "Controls the time (in seconds) between changing colors");
 
+            StepSliderConfig cycleTimeSliderOptions = new StepSliderConfig
+            {
+                min = 0.1f,
+                max = 10.0f,
+                increment = 0.1f,
+                FormatString = "{0:0.#} sec",
+            };
+
+            ModSettingsManager.AddOption(new RiskOfOptions.Options.StepSliderOption(cycleTime, cycleTimeSliderOptions));
+
             strengthMultiplier = Config.Bind("General",
                                              "StrengthMultiplier",
                                              1.0f,
                                              "Controls how intense the lighting displays");
 
+            StepSliderConfig strengthSliderOptions = new StepSliderConfig
+            {
+                min = 0.0f,
+                max = 10.0f,
+                increment = 0.1f,
+                FormatString = "{0:0.#}X",
+            };
+            ModSettingsManager.AddOption(new RiskOfOptions.Options.StepSliderOption(strengthMultiplier, strengthSliderOptions));
 
             colorSet = Config.Bind("ColorSet",
                                    "ColorSet",
                                    ColorSet.Default,
                                    "Controls which color set will be used");
+
+            ModSettingsManager.AddOption(new RiskOfOptions.Options.ChoiceOption(colorSet, new ChoiceConfig {restartRequired = true}));
 
             for (int i = 0; i < customColorCount; i++)
             {
@@ -167,10 +191,8 @@ namespace Ravemando
                                                              color,
                                                              $"Custom color #${i}");
                 customColorConfigs.Add(configColor);
-
+                ModSettingsManager.AddOption(new RiskOfOptions.Options.ColorOption(configColor, new ColorOptionConfig {restartRequired = true}));
             }
-
-
 
             Instance = this;
             using (Stream manifestResourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Ravemando.jackdotpngravemando"))

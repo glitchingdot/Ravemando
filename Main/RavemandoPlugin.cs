@@ -151,24 +151,29 @@ namespace Ravemando
                                     0.5f,
                                     "Controls the time (in seconds) between changing colors");
 
-            SliderConfig cycleTimeSliderOptions = new SliderConfig
+            StepSliderConfig cycleTimeSliderOptions = new StepSliderConfig
             {
-                restartRequired = true,
                 min = 0.1f,
+                max = 10.0f,
+                increment = 0.1f,
+                FormatString = "{0:0.#} sec",
             };
-            ModSettingsManager.AddOption(new RiskOfOptions.Options.SliderOption(cycleTime, cycleTimeSliderOptions));
+
+            ModSettingsManager.AddOption(new RiskOfOptions.Options.StepSliderOption(cycleTime, cycleTimeSliderOptions));
 
             strengthMultiplier = Config.Bind("General",
                                              "StrengthMultiplier",
                                              1.0f,
                                              "Controls how intense the lighting displays");
 
-            SliderConfig strengthSliderOptions = new SliderConfig
+            StepSliderConfig strengthSliderOptions = new StepSliderConfig
             {
-                restartRequired = true,
                 min = 0.0f,
+                max = 10.0f,
+                increment = 0.1f,
+                FormatString = "{0:0.#}X",
             };
-            ModSettingsManager.AddOption(new RiskOfOptions.Options.SliderOption(strengthMultiplier, strengthSliderOptions));
+            ModSettingsManager.AddOption(new RiskOfOptions.Options.StepSliderOption(strengthMultiplier, strengthSliderOptions));
 
             colorSet = Config.Bind("ColorSet",
                                    "ColorSet",

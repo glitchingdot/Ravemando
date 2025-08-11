@@ -282,7 +282,7 @@ namespace Ravemando
             InstanceLogger.LogInfo("Checking prefab validity!");
             if (CheckBodyPrefabValidity(bodyPrefabName, skinName, out bodyPrefab, out modelTransform, out skinController) != 0)
             {
-                InstanceLogger.LogError("Failed to add Ravemando skin due to invalid prefab!");
+                InstanceLogger.LogError($"Failed to add {skinName} skin due to invalid prefab!");
                 return default;
             }
 
@@ -295,6 +295,7 @@ namespace Ravemando
             skinDefInfo.MinionSkinReplacements = [];
             skinDefInfo.ProjectileGhostReplacements = [];
             skinDefInfo.MeshReplacements = [];
+            skinDefInfo.UnlockableDef = baseSkins[0].unlockableDef;
 
             skinDefInfo.Name = skinName;
             skinDefInfo.NameToken = skinNameToken;

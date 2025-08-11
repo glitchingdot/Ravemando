@@ -13,6 +13,7 @@ using UnityEngine.AddressableAssets;
 
 using RiskOfOptions;
 using RiskOfOptions.OptionConfigs;
+using RiskOfOptions.Options;
 
 namespace Ravemando
 {
@@ -179,6 +180,8 @@ namespace Ravemando
                                    "ColorSet",
                                    ColorSet.Default,
                                    "Controls which color set will be used");
+
+            ModSettingsManager.AddOption(new RiskOfOptions.Options.ChoiceOption(colorSet));
 
             for (int i = 0; i < customColorCount; i++)
             {

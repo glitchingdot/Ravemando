@@ -181,7 +181,7 @@ namespace Ravemando
                                    ColorSet.Default,
                                    "Controls which color set will be used");
 
-            ModSettingsManager.AddOption(new RiskOfOptions.Options.ChoiceOption(colorSet));
+            ModSettingsManager.AddOption(new RiskOfOptions.Options.ChoiceOption(colorSet, new ChoiceConfig {restartRequired = true}));
 
             for (int i = 0; i < customColorCount; i++)
             {
@@ -191,6 +191,7 @@ namespace Ravemando
                                                              color,
                                                              $"Custom color #${i}");
                 customColorConfigs.Add(configColor);
+                ModSettingsManager.AddOption(new RiskOfOptions.Options.ColorOption(configColor, new ColorOptionConfig {restartRequired = true}));
             }
 
             Instance = this;

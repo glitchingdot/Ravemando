@@ -11,6 +11,9 @@ using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
+using RiskOfOptions;
+using RiskOfOptions.OptionConfigs;
+
 namespace Ravemando
 {
     [BepInDependency(LanguageAPI.PluginGUID)]
@@ -148,11 +151,24 @@ namespace Ravemando
                                     0.5f,
                                     "Controls the time (in seconds) between changing colors");
 
+            SliderConfig cycleTimeSliderOptions = new SliderConfig
+            {
+                restartRequired = true,
+                min = 0.1f,
+            };
+            ModSettingsManager.AddOption(new RiskOfOptions.Options.SliderOption(cycleTime, cycleTimeSliderOptions));
+
             strengthMultiplier = Config.Bind("General",
                                              "StrengthMultiplier",
                                              1.0f,
                                              "Controls how intense the lighting displays");
 
+            SliderConfig strengthSliderOptions = new SliderConfig
+            {
+                restartRequired = true,
+                min = 0.0f,
+            };
+            ModSettingsManager.AddOption(new RiskOfOptions.Options.SliderOption(strengthMultiplier, strengthSliderOptions));
 
             colorSet = Config.Bind("ColorSet",
                                    "ColorSet",
@@ -167,10 +183,7 @@ namespace Ravemando
                                                              color,
                                                              $"Custom color #${i}");
                 customColorConfigs.Add(configColor);
-
             }
-
-
 
             Instance = this;
             using (Stream manifestResourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Ravemando.jackdotpngravemando"))

@@ -410,7 +410,7 @@ namespace Ravemando
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
             int baseSkinIndex = 0;
             Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Croco.matCroco_mat).WaitForCompletion();
-            int rendererIndex = 2;
+            int rendererIndex = 1;
 
             AddSimpleSkin(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, rendererIndex, loadedMat);
         }
@@ -423,7 +423,7 @@ namespace Ravemando
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
             int baseSkinIndex = 1;
             Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Croco.matCrocoAlt_mat).WaitForCompletion();
-            int rendererIndex = 2;
+            int rendererIndex = 1;
 
             AddSimpleSkin(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, rendererIndex, loadedMat);
         }

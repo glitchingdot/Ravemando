@@ -41,7 +41,8 @@
 
 	<ItemGroup>
 	  <Reference Include="RiskOfOptions">
-	    <HintPath>..\..\..\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\Default\BepInEx\plugins\Rune580-Risk_Of_Options\RiskOfOptions\RiskOfOptions.dll</HintPath>
+	    <HintPath Condition="Exists('..\..\..\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\Default\BepInEx\plugins\Rune580-Risk_Of_Options\RiskOfOptions')">..\..\..\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\Default\BepInEx\plugins\Rune580-Risk_Of_Options\RiskOfOptions\RiskOfOptions.dll</HintPath>
+	  	<HintPath Condition="Exists('\Users\jackk\Downloads\Rune580-Risk_Of_Options-2\plugins\RiskOfOptions')">\Users\jackk\Downloads\Rune580-Risk_Of_Options-2\plugins\RiskOfOptions\RiskOfOptions.dll</HintPath>
 	  </Reference>
 	  <Reference Include="RoR2BepInExPack">
 	    <HintPath>..\..\..\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\Default\BepInEx\plugins\RiskofThunder-RoR2BepInExPack\RoR2BepInExPack\RoR2BepInExPack.dll</HintPath>

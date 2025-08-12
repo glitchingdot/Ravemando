@@ -11,6 +11,11 @@ using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
+using RiskOfOptions;
+using RiskOfOptions.OptionConfigs;
+using RiskOfOptions.Options;
+using System.Linq;
+
 namespace Ravemando
 {
     [BepInDependency(LanguageAPI.PluginGUID)]
@@ -97,14 +102,20 @@ namespace Ravemando
 
                 for (int i = 0; i < cycleRenderers.Count; i++)
                 {
-                    CharacterModel.RendererInfo renderer = cycleRenderers[i];
+                    CharacterModel.RendererInfo rendererInfo = cycleRenderers[i];
 
                     InstanceLogger.LogDebug($"Setting color for renderer {i} to {cycleColors[colorIndex]} with strength multiplier {strengthMultiplier.Value}");
 
+<<<<<<< HEAD
                     
                     Material mat = renderer.defaultMaterial;
                     mat.SetColor("_EmColor", newColor);
                     renderer.defaultMaterial = mat;
+=======
+                    Material mat = rendererInfo.defaultMaterial;
+                    mat.SetColor("_EmColor", newColor);
+                    rendererInfo.defaultMaterial = mat;
+>>>>>>> main
                 }
 
                 colorIndex++;
@@ -147,16 +158,39 @@ namespace Ravemando
                                     0.5f,
                                     "Controls the time (in seconds) between changing colors");
 
+<<<<<<< HEAD
+=======
+            StepSliderConfig cycleTimeSliderOptions = new StepSliderConfig
+            {
+                min = 0.1f,
+                max = 10.0f,
+                increment = 0.1f,
+                FormatString = "{0:0.#} sec",
+            };
+
+            ModSettingsManager.AddOption(new RiskOfOptions.Options.StepSliderOption(cycleTime, cycleTimeSliderOptions));
+
+>>>>>>> main
             strengthMultiplier = Config.Bind("General",
                                              "StrengthMultiplier",
                                              1.0f,
                                              "Controls how intense the lighting displays");
 
+            StepSliderConfig strengthSliderOptions = new StepSliderConfig
+            {
+                min = 0.0f,
+                max = 10.0f,
+                increment = 0.1f,
+                FormatString = "{0:0.#}X",
+            };
+            ModSettingsManager.AddOption(new RiskOfOptions.Options.StepSliderOption(strengthMultiplier, strengthSliderOptions));
 
             colorSet = Config.Bind("ColorSet",
                                    "ColorSet",
                                    ColorSet.Default,
                                    "Controls which color set will be used");
+
+            ModSettingsManager.AddOption(new RiskOfOptions.Options.ChoiceOption(colorSet, new ChoiceConfig {restartRequired = true}));
 
             for (int i = 0; i < customColorCount; i++)
             {
@@ -166,10 +200,8 @@ namespace Ravemando
                                                              color,
                                                              $"Custom color #${i}");
                 customColorConfigs.Add(configColor);
-
+                ModSettingsManager.AddOption(new RiskOfOptions.Options.ColorOption(configColor, new ColorOptionConfig {restartRequired = true}));
             }
-
-
 
             Instance = this;
             using (Stream manifestResourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Ravemando.jackdotpngravemando"))
@@ -179,7 +211,7 @@ namespace Ravemando
 
 
             BodyCatalog.availability.CallWhenAvailable(new Action(BodyCatalogInit));
-            //RavemandoPlugin.ReplaceShaders();
+            RavemandoPlugin.ReplaceShaders();
         }
 
         private static void ReplaceShaders()
@@ -209,6 +241,8 @@ namespace Ravemando
             AddHornet();
             AddLoader();
             AddClassic();
+            AddAcrid();
+            AddAcridAlt();
             AddTraptain();
             AddRadmiral();
             AddRailgunner();
@@ -259,7 +293,7 @@ namespace Ravemando
             InstanceLogger.LogInfo("Checking prefab validity!");
             if (CheckBodyPrefabValidity(bodyPrefabName, skinName, out bodyPrefab, out modelTransform, out skinController) != 0)
             {
-                InstanceLogger.LogError("Failed to add Ravemando skin due to invalid prefab!");
+                InstanceLogger.LogError($"Failed to add {skinName} skin due to invalid prefab!");
                 return default;
             }
 
@@ -272,8 +306,9 @@ namespace Ravemando
             skinDefInfo.MinionSkinReplacements = [];
             skinDefInfo.ProjectileGhostReplacements = [];
             skinDefInfo.MeshReplacements = [];
+            skinDefInfo.UnlockableDef = baseSkins[0].unlockableDef;
 
-            skinDefInfo.Name = skinNameToken;
+            skinDefInfo.Name = skinName;
             skinDefInfo.NameToken = skinNameToken;
 
             skinDefInfo.Icon = icon;
@@ -307,7 +342,23 @@ namespace Ravemando
 
             Material instancedMat = new Material(replacementMaterial);
 
+            /*
+            Texture diffuseTexture = instancedMat.mainTexture;
+
+            if (diffuseTexture == null)
+            {
+                InstanceLogger.LogInfo("No Main Texture!");
+            }
+
+            Texture emiTexture = instancedMat.GetTexture("_EmTex");
+
+            Texture newDiffuse = OverlayTexture2D(diffuseTexture, emiTexture, Color.black);
+
+            instancedMat.SetTexture("_MainTex", newDiffuse);
             InstanceLogger.LogInfo("Loaded material: " + instancedMat.name);
+            */
+
+            instancedMat.SetFloat("_EmPower", 1.0f);
 
             newRendererInfos[0] = new CharacterModel.RendererInfo
             {
@@ -323,6 +374,61 @@ namespace Ravemando
             AddSkinToSkinController(skinController, skinDefInfo);
         }
 
+
+        // Shout-out StackOverflow #44734346
+        private static Texture2D duplicateTexture(Texture source)
+        {
+            RenderTexture renderTex = RenderTexture.GetTemporary(
+                        source.width,
+                        source.height,
+                        0,
+                        RenderTextureFormat.Default,
+                        RenderTextureReadWrite.Default);
+
+            Graphics.Blit(source, renderTex);
+            RenderTexture previous = RenderTexture.active;
+            RenderTexture.active = renderTex;
+            Texture2D readableText = new Texture2D(source.width, source.height);
+            readableText.ReadPixels(new Rect(0, 0, renderTex.width, renderTex.height), 0, 0);
+            readableText.Apply();
+            RenderTexture.active = previous;
+            RenderTexture.ReleaseTemporary(renderTex);
+            return readableText;
+        }
+
+        private static Texture2D OverlayTexture2D(Texture original, Texture overlay, Color maskColor)
+        {
+            Texture2D newTexture = duplicateTexture(original);
+
+            if ((overlay.width != original.width) && (overlay.height != original.height))
+            {
+                return null;
+            }
+
+            Color[] originalPixels = newTexture.GetPixels();
+            Color[] overlayPixels = duplicateTexture(overlay).GetPixels();
+
+            for (int i = 0; i < originalPixels.Length; i++)
+            {
+                Color overlayPixel = overlayPixels[i];
+
+                if (overlayPixel != maskColor)
+                {
+                    InstanceLogger.LogInfo($"Overlaid Pixel {i} to {overlayPixel}!");
+                    originalPixels[i] = overlayPixel;
+                }
+
+            }
+
+            InstanceLogger.LogInfo(originalPixels[495]);
+
+            newTexture.SetPixels(originalPixels);
+            newTexture.name = $"{original.name}_OVERLAID";
+            newTexture.Apply(false);
+
+            return newTexture;
+        }
+
         private static void AddRavemando()
         {
             string bodyPrefabName = "CommandoBody";
@@ -330,9 +436,8 @@ namespace Ravemando
             string skinNameToken = "JACKDOTPNG_SKIN_COMMANDO_-_RAVEMANDO_NAME";
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Commando/01 - Ravemando/Icon.png");
             int baseSkinIndex = 0;
-
-            //Material mat = RavemandoPlugin.assetBundle.LoadAsset<Material>("Assets/Commando/01 - Ravemando/Material.mat");
             Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Commando.matCommandoDualies_mat).WaitForCompletion();
+
             int rendererIndex = 6;
 
             AddSimpleSkin(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, rendererIndex, loadedMat);
@@ -345,7 +450,6 @@ namespace Ravemando
             string skinNameToken = "JACKDOTPNG_SKIN_COMMANDO_-_H0RN3T_NAME";
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Commando/02 - H0rn3t/Icon.png");
             int baseSkinIndex = 1;
-            //var mat = RavemandoPlugin.assetBundle.LoadAsset<Material>("Assets/Commando/01 - Ravemando/Material.mat");
             Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Commando.matCommandoDualiesAlt_mat).WaitForCompletion();
             int rendererIndex = 6;
 
@@ -378,6 +482,32 @@ namespace Ravemando
             AddSimpleSkin(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, rendererIndex, loadedMat);
         }
 
+        private static void AddAcrid()
+        {
+            string bodyPrefabName = "CrocoBody";
+            string skinName = "Acrid";
+            string skinNameToken = "JACKDOTPNG_SKIN_LOADER_-_ACRID_NAME";
+            Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
+            int baseSkinIndex = 0;
+            Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Croco.matCroco_mat).WaitForCompletion();
+            int rendererIndex = 1;
+
+            AddSimpleSkin(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, rendererIndex, loadedMat);
+        }
+
+        private static void AddAcridAlt()
+        {
+            string bodyPrefabName = "CrocoBody";
+            string skinName = "Acrid Alt";
+            string skinNameToken = "JACKDOTPNG_SKIN_LOADER_-_ACRIDALT_NAME";
+            Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
+            int baseSkinIndex = 1;
+            Material loadedMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Croco.matCrocoAlt_mat).WaitForCompletion();
+            int rendererIndex = 1;
+
+            AddSimpleSkin(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, rendererIndex, loadedMat);
+        }
+
         private static void AddTraptain()
         {
             string bodyPrefabName = "CaptainBody";
@@ -405,6 +535,7 @@ namespace Ravemando
 
         }
 
+<<<<<<< HEAD
         private static void AddRailgunner()
         {
             string bodyPrefabName = "RailgunnerBody";
@@ -443,6 +574,8 @@ namespace Ravemando
         }
 
 
+=======
+>>>>>>> main
 #pragma warning restore CS0612 // Type or member is obsolete
 
         private static AssetBundle assetBundle;

@@ -1,6 +1,8 @@
 # Ravemando
 The UES Safe Travels is having an all-out party, and the survivors have been outfit with the greatest **RGB lighting** Petrichor V has ever seen.
 
+**WARNING**: This mod contains flashing lights. Play with caution, and if you have any concerns before, during, or after usage, consult a healthcare professional.
+
 ## Description
 Ravemando is a skin mod that adds skins to many survivors, with the primary feature being cycling colors on prominent features of each survivor.
 
@@ -9,8 +11,12 @@ Includes skins for:
 - Huntress
 - Bandit
 - Engineer
+- Mercenary
+- REX
 - Loader
+- Acrid
 - Captain
+- Railgunner
 
 ## Color Sets
 Ravemando's default colors not suiting your fancy? All good! Ravemando has **Color Sets** to change what colors it uses.

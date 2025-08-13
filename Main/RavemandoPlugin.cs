@@ -36,7 +36,13 @@ namespace Ravemando
         private static ConfigEntry<float> cycleTime;
         private static ConfigEntry<float> strengthMultiplier;
 
-        private static List<CharacterModel.RendererInfo> cycleRenderers = new List<CharacterModel.RendererInfo>();
+        private enum rendererType
+        {
+            Standard,
+            CloudRemap
+        };
+
+        private static Dictionary<CharacterModel.RendererInfo, rendererType> cycleRenderers = new Dictionary<CharacterModel.RendererInfo, rendererType>();
 
         private static List<Color> defaultColors = new List<Color>
             {
@@ -79,7 +85,7 @@ namespace Ravemando
         {
             int colorIndex = 0;
 
-            List<Color> cycleColors = defaultColors;
+            List<Color> colorStorage = defaultColors;
 
             switch (colorSet.Value)
             {
@@ -87,29 +93,39 @@ namespace Ravemando
                     //If this fails (colorSet not set), it will fail safe because it will default to to base colors without needing config input
                     break;
                 case ColorSet.Custom:
-                    cycleColors = GetCustomColors();
+                    colorStorage = GetCustomColors();
                     break;
             }
 
             for (; ; )
             {
-                if (colorIndex >= cycleColors.Count)
+                if (colorIndex >= colorStorage.Count)
                 {
                     colorIndex = 0;
                 }
 
-                Color newColor = cycleColors[colorIndex] * strengthMultiplier.Value;
+                Color newColor = colorStorage[colorIndex] * strengthMultiplier.Value;
 
-                for (int i = 0; i < cycleRenderers.Count; i++)
+                foreach (var item in cycleRenderers)
                 {
-                    CharacterModel.RendererInfo rendererInfo = cycleRenderers[i];
+                    CharacterModel.RendererInfo rendererInfo = item.Key;
+                    rendererType rendererType = item.Value;
 
-                    InstanceLogger.LogDebug($"Setting color for renderer {i} to {cycleColors[colorIndex]} with strength multiplier {strengthMultiplier.Value}");
+                    InstanceLogger.LogDebug($"Setting color for {rendererInfo.renderer.name} to {colorStorage[colorIndex]} with strength multiplier {strengthMultiplier.Value}");
 
-                    Material mat = rendererInfo.defaultMaterial;
-                    mat.SetColor("_EmColor", newColor);
-                    rendererInfo.defaultMaterial = mat;
-                }
+                    if (rendererType == rendererType.Standard)
+                    {
+                        Material mat = rendererInfo.defaultMaterial;
+                        mat.SetColor("_EmColor", newColor);
+                        rendererInfo.defaultMaterial = mat;
+                    }
+                    else if (rendererType == rendererType.CloudRemap)
+                    {
+                        Material mat = rendererInfo.defaultMaterial;
+                        mat.SetColor("_TintColor", newColor);
+                        rendererInfo.defaultMaterial = mat;
+                    }
+                } 
 
                 colorIndex++;
 
@@ -128,9 +144,17 @@ namespace Ravemando
             Instance.StartCoroutine(CycleColor());
         }
 
-        private static void AddToCycle(CharacterModel.RendererInfo renderer)
+        private static void AddToCycle(CharacterModel.RendererInfo renderer, rendererType rendererType)
         {
-            cycleRenderers.Add(renderer);
+            cycleRenderers.Add(renderer, rendererType);
+        }
+
+        private static void AddToCycle(CharacterModel.RendererInfo[] renderers, rendererType rendererType)
+        {
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                cycleRenderers.Add(renderers[i], rendererType);
+            }
         }
 
         internal static ManualLogSource InstanceLogger
@@ -235,6 +259,7 @@ namespace Ravemando
             AddAcridAlt();
             AddTraptain();
             AddRadmiral();
+            AddRailgunner();
 
             StartCycle();
         }
@@ -357,7 +382,7 @@ namespace Ravemando
                 renderer = renderers[rendererIndex],
             };
 
-            AddToCycle(newRendererInfos[0]);
+            AddToCycle(newRendererInfos, rendererType.Standard);
             skinDefInfo.RendererInfos = newRendererInfos;
 
             AddSkinToSkinController(skinController, skinDefInfo);
@@ -385,7 +410,7 @@ namespace Ravemando
             return readableText;
         }
 
-        private static Texture2D OverlayTexture2D(Texture original, Texture overlay, Color maskColor)
+        private static Texture2D OverlayTexture2D(Texture2D original, Texture2D overlay, Color maskColor)
         {
             Texture2D newTexture = duplicateTexture(original);
 
@@ -408,8 +433,6 @@ namespace Ravemando
                 }
 
             }
-
-            InstanceLogger.LogInfo(originalPixels[495]);
 
             newTexture.SetPixels(originalPixels);
             newTexture.name = $"{original.name}_OVERLAID";
@@ -522,6 +545,117 @@ namespace Ravemando
 
             AddSimpleSkin(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, rendererIndex, loadedMat);
 
+        }
+
+        private static Texture2D MakeTextureBW(Texture texture) {
+            Texture2D newTexture = duplicateTexture(texture);
+
+            Color[] pixelArray = newTexture.GetPixels();
+
+            float h, _s, v;
+
+            for (int i = 0; i < pixelArray.Length; i++)
+            {
+
+                Color.RGBToHSV(pixelArray[i], out h, out _s, out v);
+                pixelArray[i] = Color.HSVToRGB(h, 0, v);
+
+            }
+
+            newTexture.SetPixels(pixelArray);
+            newTexture.Apply(false);
+
+            return newTexture;
+        }
+
+        private static void AddRailgunner()
+        {
+            string bodyPrefabName = "RailgunnerBody";
+            string skinName = "Railgunner";
+            string skinNameToken = "JACKDOTPNG_SKIN_RAILGUNNER_-_RAILGUNNER_NAME";
+            Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
+            int baseSkinIndex = 0;
+            int rendererIndex = 3;
+
+            GameObject bodyPrefab;
+            GameObject modelTransform;
+            ModelSkinController skinController;
+
+            SkinDefInfo skinDefInfo = CreateNewSkinDefInfo(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, out bodyPrefab, out modelTransform, out skinController);
+
+            // Railgunner uses many different renderers, so we're gonna have to prepare for that
+            CharacterModel.RendererInfo[] newRendererInfos = new CharacterModel.RendererInfo[4];
+            Renderer[] renderers = modelTransform.GetComponentsInChildren<Renderer>(true);
+
+            Material trimMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailgunnerTrim_mat).WaitForCompletion();
+            Material railgunMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailgun_mat).WaitForCompletion();
+
+            Material idleMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailgunBackpackIdle_mat).WaitForCompletion();
+            Material chargingMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailgunBackpackCharging_mat).WaitForCompletion();
+
+            Texture2D railgunEmi = Addressables.LoadAssetAsync<Texture2D>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.texRailgunEmission_png).WaitForCompletion();
+
+            Material instancedTrim = new Material(trimMat);
+            Material instanceIdle = new Material(idleMat);
+            Material instanceCharging = new Material(chargingMat);
+            Material instancedRailgun = new Material(railgunMat);
+
+            string texName = "_RemapTex";
+
+            instanceIdle.SetTexture(texName, MakeTextureBW(instanceIdle.GetTexture(texName)));
+            instanceCharging.SetTexture(texName, MakeTextureBW(instanceIdle.GetTexture(texName)));
+
+            instancedRailgun.SetTexture("_EmTex", MakeTextureBW(railgunEmi));
+
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                InstanceLogger.LogInfo("renderers[i].name");
+            }
+            
+            // _TintColor
+            // Trim (Visor), Backpack (Idle), Backpack (Charging), Railgun (Screens), Bullet Trail
+
+            newRendererInfos[0] = new CharacterModel.RendererInfo
+            {
+                defaultMaterial = instancedTrim,
+                defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
+                ignoreOverlays = false,
+                renderer = renderers[rendererIndex],
+            };
+
+            newRendererInfos[1] = new CharacterModel.RendererInfo
+            {
+                defaultMaterial = instancedRailgun,
+                defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
+                ignoreOverlays = false,
+                renderer = renderers[4]
+            };
+
+            newRendererInfos[2] = new CharacterModel.RendererInfo
+            {
+                defaultMaterial = instanceIdle,
+                defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
+                ignoreOverlays = false,
+                renderer = renderers[11],
+            };
+
+            newRendererInfos[3] = new CharacterModel.RendererInfo
+            {
+                defaultMaterial = instanceCharging,
+                defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
+                ignoreOverlays = false,
+                renderer = renderers[12]
+            };
+
+            AddToCycle(newRendererInfos[0], rendererType.Standard);
+            AddToCycle(newRendererInfos[1], rendererType.Standard);
+
+            AddToCycle(newRendererInfos[2], rendererType.CloudRemap);
+            AddToCycle(newRendererInfos[3], rendererType.CloudRemap);
+
+            skinDefInfo.RendererInfos = newRendererInfos;
+
+            AddSkinToSkinController(skinController, skinDefInfo);
         }
 
 #pragma warning restore CS0612 // Type or member is obsolete

@@ -603,7 +603,7 @@ namespace Ravemando
             string texName = "_RemapTex";
 
             instanceIdle.SetTexture(texName, MakeTextureBW(instanceIdle.GetTexture(texName)));
-            instanceCharging.SetTexture(texName, MakeTextureBW(instanceIdle.GetTexture(texName)));
+            instanceCharging.SetTexture(texName, MakeTextureBW(instanceCharging.GetTexture(texName)));
 
             instancedRailgun.SetTexture("_EmTex", MakeTextureBW(railgunEmi));
 

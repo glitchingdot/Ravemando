@@ -568,6 +568,14 @@ namespace Ravemando
             return newTexture;
         }
 
+        // To avoid making changes to ALL instances of material, we instance the material after
+        // we load it
+        private static Material loadMaterialWithInstance(string materialPath)
+        {
+            Material loadedMat = Addressables.LoadAssetAsync<Material>(materialPath).WaitForCompletion();
+            return new Material(loadedMat);
+        }
+
         private static void AddRailgunner()
         {
             string bodyPrefabName = "RailgunnerBody";
@@ -587,37 +595,26 @@ namespace Ravemando
             CharacterModel.RendererInfo[] newRendererInfos = new CharacterModel.RendererInfo[4];
             Renderer[] renderers = modelTransform.GetComponentsInChildren<Renderer>(true);
 
-            Material trimMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailgunnerTrim_mat).WaitForCompletion();
-            Material railgunMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailgun_mat).WaitForCompletion();
+            Material trimMat = loadMaterialWithInstance(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailgunnerTrim_mat);
+            Material railgunMat = loadMaterialWithInstance(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailgun_mat);
 
-            Material idleMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailgunBackpackIdle_mat).WaitForCompletion();
-            Material chargingMat = Addressables.LoadAssetAsync<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailgunBackpackCharging_mat).WaitForCompletion();
+            Material idleMat = loadMaterialWithInstance(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailgunBackpackIdle_mat);
+            Material chargingMat = loadMaterialWithInstance(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailgunBackpackCharging_mat);
 
             Texture2D railgunEmi = Addressables.LoadAssetAsync<Texture2D>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.texRailgunEmission_png).WaitForCompletion();
 
-            Material instancedTrim = new Material(trimMat);
-            Material instanceIdle = new Material(idleMat);
-            Material instanceCharging = new Material(chargingMat);
-            Material instancedRailgun = new Material(railgunMat);
-
             string texName = "_RemapTex";
 
-            instanceIdle.SetTexture(texName, MakeTextureBW(instanceIdle.GetTexture(texName)));
-            instanceCharging.SetTexture(texName, MakeTextureBW(instanceCharging.GetTexture(texName)));
+            trimMat.SetTexture(texName, MakeTextureBW(trimMat.GetTexture(texName)));
+            chargingMat.SetTexture(texName, MakeTextureBW(chargingMat.GetTexture(texName)));
 
-            instancedRailgun.SetTexture("_EmTex", MakeTextureBW(railgunEmi));
+            railgunMat.SetTexture("_EmTex", MakeTextureBW(railgunEmi));
 
-            for (int i = 0; i < renderers.Length; i++)
-            {
-                InstanceLogger.LogInfo("renderers[i].name");
-            }
-            
-            // _TintColor
             // Trim (Visor), Backpack (Idle), Backpack (Charging), Railgun (Screens), Bullet Trail
 
             newRendererInfos[0] = new CharacterModel.RendererInfo
             {
-                defaultMaterial = instancedTrim,
+                defaultMaterial = trimMat,
                 defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
                 ignoreOverlays = false,
                 renderer = renderers[rendererIndex],
@@ -625,7 +622,7 @@ namespace Ravemando
 
             newRendererInfos[1] = new CharacterModel.RendererInfo
             {
-                defaultMaterial = instancedRailgun,
+                defaultMaterial = railgunMat,
                 defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
                 ignoreOverlays = false,
                 renderer = renderers[4]
@@ -633,7 +630,7 @@ namespace Ravemando
 
             newRendererInfos[2] = new CharacterModel.RendererInfo
             {
-                defaultMaterial = instanceIdle,
+                defaultMaterial = idleMat,
                 defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
                 ignoreOverlays = false,
                 renderer = renderers[11],
@@ -641,7 +638,7 @@ namespace Ravemando
 
             newRendererInfos[3] = new CharacterModel.RendererInfo
             {
-                defaultMaterial = instanceCharging,
+                defaultMaterial = chargingMat,
                 defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
                 ignoreOverlays = false,
                 renderer = renderers[12]

@@ -603,10 +603,10 @@ namespace Ravemando
 
             Texture2D railgunEmi = Addressables.LoadAssetAsync<Texture2D>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.texRailgunEmission_png).WaitForCompletion();
 
-            string texName = "_RemapTex";
+            string remapName = "_RemapTex";
 
-            trimMat.SetTexture(texName, MakeTextureBW(trimMat.GetTexture(texName)));
-            chargingMat.SetTexture(texName, MakeTextureBW(chargingMat.GetTexture(texName)));
+            trimMat.SetTexture(remapName, MakeTextureBW(trimMat.GetTexture(remapName)));
+            chargingMat.SetTexture(remapName, MakeTextureBW(chargingMat.GetTexture(remapName)));
 
             railgunMat.SetTexture("_EmTex", MakeTextureBW(railgunEmi));
 

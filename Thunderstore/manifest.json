@@ -1,10 +1,11 @@
 {
     "name": "Ravemando",
-    "version_number": "1.2.0",
-    "website_url": "",
-    "description": "Gives survivors RGB lighting",
+    "version_number": "2.0.0",
+    "website_url": "https://github.com/glitchingdot/Ravemando",
+    "description": "Adds skins that gives survivors RGB lighting.",
     "dependencies": [
         "tristanmcpherson-R2API-5.0.5",
-        "KingEnderBrine-LobbySkinsFix-1.2.1"
+        "KingEnderBrine-LobbySkinsFix-1.2.1",
+        "Rune580-Risk_Of_Options-2.8.4"
     ]
 }

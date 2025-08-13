@@ -29,7 +29,7 @@ namespace Ravemando
         public const string PluginGUID = "com." + PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "jackdotpng";
         public const string PluginName = "Ravemando";
-        public const string PluginVersion = "2.0.3";
+        public const string PluginVersion = "2.0.0";
 
         internal static RavemandoPlugin Instance { get; private set; }
 

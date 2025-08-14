@@ -15,6 +15,7 @@ using RiskOfOptions;
 using RiskOfOptions.OptionConfigs;
 using RiskOfOptions.Options;
 using System.Linq;
+using UnityEngine.Rendering;
 
 namespace Ravemando
 {
@@ -576,6 +577,21 @@ namespace Ravemando
             return new Material(loadedMat);
         }
 
+        private static CharacterModel.RendererInfo makeNewRenderInfo(
+            Material defaultMaterial,
+            Renderer renderer,
+            ShadowCastingMode defaultShadowCastingMode = ShadowCastingMode.On,
+            bool ignoreOverlays = false)
+        {
+            return new CharacterModel.RendererInfo
+            {
+                defaultMaterial = defaultMaterial,
+                defaultShadowCastingMode = defaultShadowCastingMode,
+                ignoreOverlays = ignoreOverlays,
+                renderer = renderer
+            };
+        }
+
         private static void AddRailgunner()
         {
             string bodyPrefabName = "RailgunnerBody";
@@ -583,7 +599,6 @@ namespace Ravemando
             string skinNameToken = "JACKDOTPNG_SKIN_RAILGUNNER_-_RAILGUNNER_NAME";
             Sprite icon = assetBundle.LoadAsset<Sprite>("Assets/Placeholder Icon.png");
             int baseSkinIndex = 0;
-            int rendererIndex = 3;
 
             GameObject bodyPrefab;
             GameObject modelTransform;
@@ -610,39 +625,24 @@ namespace Ravemando
 
             railgunMat.SetTexture("_EmTex", MakeTextureBW(railgunEmi));
 
-            // Trim (Visor), Backpack (Idle), Backpack (Charging), Railgun (Screens), Bullet Trail
+            /*
+            * 3: Trim / Visor
+            * 4: Railgun
+            * 5: StatusLED, Rail
+            * 6: StatusLED, Rail (again?)
+            * 7: PowerLED, Rail
+            * 8: SMGLaser
+            * 9: StatusLED, Backpack
+            * 10: PowerLED, Barrel
+            * 11: Monitor, Idle
+            * 12: Monitor, Charging
+            * Total: 10
+            */
 
-            newRendererInfos[0] = new CharacterModel.RendererInfo
-            {
-                defaultMaterial = trimMat,
-                defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
-                ignoreOverlays = false,
-                renderer = renderers[rendererIndex],
-            };
-
-            newRendererInfos[1] = new CharacterModel.RendererInfo
-            {
-                defaultMaterial = railgunMat,
-                defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
-                ignoreOverlays = false,
-                renderer = renderers[4]
-            };
-
-            newRendererInfos[2] = new CharacterModel.RendererInfo
-            {
-                defaultMaterial = idleMat,
-                defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
-                ignoreOverlays = false,
-                renderer = renderers[11],
-            };
-
-            newRendererInfos[3] = new CharacterModel.RendererInfo
-            {
-                defaultMaterial = chargingMat,
-                defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
-                ignoreOverlays = false,
-                renderer = renderers[12]
-            };
+            newRendererInfos[0] = makeNewRenderInfo(trimMat, renderers[3]);
+            newRendererInfos[1] = makeNewRenderInfo(railgunMat, renderers[4]);
+            newRendererInfos[2] = makeNewRenderInfo(idleMat, renderers[11]);
+            newRendererInfos[3] = makeNewRenderInfo(chargingMat, renderers[12]);
 
             AddToCycle(newRendererInfos[0], rendererType.Standard);
             AddToCycle(newRendererInfos[1], rendererType.Standard);

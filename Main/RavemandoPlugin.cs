@@ -607,7 +607,7 @@ namespace Ravemando
             SkinDefInfo skinDefInfo = CreateNewSkinDefInfo(bodyPrefabName, skinName, skinNameToken, icon, baseSkinIndex, out bodyPrefab, out modelTransform, out skinController);
 
             // Railgunner uses many different renderers, so we're gonna have to prepare for that
-            CharacterModel.RendererInfo[] newRendererInfos = new CharacterModel.RendererInfo[4];
+            CharacterModel.RendererInfo[] newRendererInfos = new CharacterModel.RendererInfo[10];
             Renderer[] renderers = modelTransform.GetComponentsInChildren<Renderer>(true);
 
             Material trimMat = loadMaterialWithInstance(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailgunnerTrim_mat);
@@ -615,6 +615,9 @@ namespace Ravemando
 
             Material idleMat = loadMaterialWithInstance(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailgunBackpackIdle_mat);
             Material chargingMat = loadMaterialWithInstance(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailgunBackpackCharging_mat);
+
+            Material ledMat = loadMaterialWithInstance(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailgunnerLED_mat);
+            Material laserMat = loadMaterialWithInstance(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.matRailgunnerPistolLaser_mat);
 
             Texture2D railgunEmi = Addressables.LoadAssetAsync<Texture2D>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Railgunner.texRailgunEmission_png).WaitForCompletion();
 
@@ -626,29 +629,42 @@ namespace Ravemando
             railgunMat.SetTexture("_EmTex", MakeTextureBW(railgunEmi));
 
             /*
-            * 3: Trim / Visor
-            * 4: Railgun
-            * 5: StatusLED, Rail
-            * 6: StatusLED, Rail (again?)
-            * 7: PowerLED, Rail
-            * 8: SMGLaser
-            * 9: StatusLED, Backpack
-            * 10: PowerLED, Barrel
-            * 11: Monitor, Idle
-            * 12: Monitor, Charging
+            * 3: Trim / Visor [*]
+            * 4: Railgun [*]
+            * 5: StatusLED, Rail []
+            * 6: StatusLED, Rail (again?) []
+            * 7: PowerLED, Rail []
+            * 8: SMGLaser []
+            * 9: StatusLED, Backpack []
+            * 10: PowerLED, Barrel []
+            * 11: Monitor, Idle [*]
+            * 12: Monitor, Charging [*]
             * Total: 10
             */
 
             newRendererInfos[0] = makeNewRenderInfo(trimMat, renderers[3]);
             newRendererInfos[1] = makeNewRenderInfo(railgunMat, renderers[4]);
-            newRendererInfos[2] = makeNewRenderInfo(idleMat, renderers[11]);
-            newRendererInfos[3] = makeNewRenderInfo(chargingMat, renderers[12]);
+            newRendererInfos[2] = makeNewRenderInfo(ledMat, renderers[5]);
+            newRendererInfos[3] = makeNewRenderInfo(ledMat, renderers[6]);
+            newRendererInfos[4] = makeNewRenderInfo(ledMat, renderers[7]);
+            newRendererInfos[5] = makeNewRenderInfo(laserMat, renderers[8]);
+            newRendererInfos[6] = makeNewRenderInfo(ledMat, renderers[9]);
+            newRendererInfos[7] = makeNewRenderInfo(ledMat, renderers[10]);
+            newRendererInfos[8] = makeNewRenderInfo(idleMat, renderers[11]);
+            newRendererInfos[9] = makeNewRenderInfo(chargingMat, renderers[12]);
 
             AddToCycle(newRendererInfos[0], rendererType.Standard);
             AddToCycle(newRendererInfos[1], rendererType.Standard);
-
             AddToCycle(newRendererInfos[2], rendererType.CloudRemap);
             AddToCycle(newRendererInfos[3], rendererType.CloudRemap);
+            AddToCycle(newRendererInfos[4], rendererType.CloudRemap);
+            AddToCycle(newRendererInfos[5], rendererType.CloudRemap);
+            AddToCycle(newRendererInfos[6], rendererType.CloudRemap);
+            AddToCycle(newRendererInfos[7], rendererType.CloudRemap);
+            AddToCycle(newRendererInfos[8], rendererType.CloudRemap);
+            AddToCycle(newRendererInfos[9], rendererType.CloudRemap);
+
+
 
             skinDefInfo.RendererInfos = newRendererInfos;
 
